@@ -1,0 +1,16 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql" // PostgreSQLを使用している場合
+  url      = env("DATABASE_URL") // データベースの接続URL（.envから読み込む）
+}
+
+generator client {
+  provider = "prisma-client-js" // Prismaクライアントを生成するための設定
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
