@@ -3,7 +3,6 @@ const router = express.Router();
 const { login } = require('../controllers/authController');
 
 // ログインAPIのルート
-console.log("back,authroutesパス");
 router.post('/login', login);
 
 module.exports = router;

@@ -1,23 +1,28 @@
-import React from 'react';
+import React from "react";
 
 const UserCard = ({ user }) => {
+  // 日本語ラベルとキーのマッピングを作成
+  const userFields = [
+    { label: "名前", key: "name" },
+    { label: "プログラミング言語", key: "language" },
+    { label: "フレームワーク", key: "framework" },
+    { label: "ライブラリ", key: "librarie" },
+    { label: "データベース", key: "db" },
+    { label: "環境", key: "environment" },
+    { label: "経験", key: "experience" },
+    { label: "コミット可能時間", key: "time_commit" },
+    { label: "モチベーション", key: "motivation" },
+  ];
+
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden p-4">
-      <img src={user.profilePic} alt={user.name} className="w-full h-32 object-cover rounded" />
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">{user.name}</h3>
-        <p className="text-gray-500">言語: {user.languages.join(', ')}</p>
-        <p className="text-gray-500">フレームワーク: {user.frameworks.join(', ')}</p>
-        <p className="text-gray-500">ライブラリ: {user.libraries.join(', ')}</p>
-        <p className="text-gray-500">データベース: {user.databases.join(', ')}</p>
-        <p className="text-gray-500">開発環境: {user.environments.join(', ')}</p>
-        <p className="text-gray-700">担当工程: {user.experience}</p>
-        <p className="text-gray-500 text-sm">リソース: {user.timeCommitment}</p>
-        <p className="text-gray-500 text-sm">モチベーション: {user.motivation}</p>
-        <button className="mt-4 bg-yellow-400 text-black py-1 px-3 rounded-lg">
-          マッチ申請 or チャット
-        </button>
-      </div>
+    <div className="user-card">
+      <h3>ユーザー情報</h3>
+      {userFields.map((field, index) => (
+        <p key={index}>
+          <strong>{field.label}:</strong>{" "}
+          {user[field.key] || "N/A"}
+        </p>
+      ))}
     </div>
   );
 };

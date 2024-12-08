@@ -1,16 +1,38 @@
-// prisma/schema.prisma
-
-datasource db {
-  provider = "postgresql" // PostgreSQLを使用している場合
-  url      = env("DATABASE_URL") // データベースの接続URL（.envから読み込む）
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
 }
 
-generator client {
-  provider = "prisma-client-js" // Prismaクライアントを生成するための設定
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  password    String
+  icon        String?
+  language    String?
+  framework   String?
+  librarie    String?
+  db          String?
+  experience  Int?
+  time_commit String?
+  environment String?
+  short_bio   String?   @db.VarChar(10)
+  full_bio    String?   @db.VarChar(200)
+  motivation  String?
+  messages    Message[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  icon      String
+  name      String
+  message   String
+  timestamp DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

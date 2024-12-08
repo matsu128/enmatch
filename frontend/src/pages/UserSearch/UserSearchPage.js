@@ -1,54 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserCard from './UserCard';
 import CategoryFilter from '../../atoms/CategoryFilter';
-import users from './usersData';
+import axios from 'axios';
+
+// ベースURLの設定
+axios.defaults.baseURL = process.env.REACT_APP_API_URL ;
 
 const UserSearchPage = () => {
-    const [filteredUsers, setFilteredUsers] = useState(users);
-    const [selectedFilters, setSelectedFilters] = useState({
-      languages: [],
-      frameworks: [],
-      libraries: [],
-      databases: [],
-      environments: [],
-      experience: [],
-      timeCommitment: [],
-      motivation: [],
-    });
-  
-    // フィルターの適用処理
-    const applyFilters = () => {
-      // フィルタリング処理
-      const filtered = users.filter(user => {
-        return (
-          // 言語フィルター
-          (selectedFilters.languages.length === 0 || selectedFilters.languages.some(lang => user.languages.includes(lang))) &&
-          
-          // フレームワークフィルター
-          (selectedFilters.frameworks.length === 0 || selectedFilters.frameworks.some(framework => user.frameworks.includes(framework))) &&
-          
-          // ライブラリフィルター
-          (selectedFilters.libraries.length === 0 || selectedFilters.libraries.some(library => user.libraries.includes(library))) &&
-          
-          // データベースフィルター
-          (selectedFilters.databases.length === 0 || selectedFilters.databases.some(db => user.databases.includes(db))) &&
-          
-          // 環境フィルター
-          (selectedFilters.environments.length === 0 || selectedFilters.environments.some(environment => user.environments.includes(environment))) &&
-          
-          // 経験フィルター
-          (selectedFilters.experience.length === 0 || selectedFilters.experience.includes(user.experience)) &&
-          
-          // 時間フィルター
-          (selectedFilters.timeCommitment.length === 0 || selectedFilters.timeCommitment.includes(user.timeCommitment)) &&
-          
-          // モチベーションフィルター
-          (selectedFilters.motivation.length === 0 || selectedFilters.motivation.includes(user.motivation))
-        );
-      });
-      console.log("フィルタ後のユーザーリスト:", filtered);
-      setFilteredUsers(filtered); // フィルター後のユーザーを更新
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({
+    language: [],
+    framework: [],
+    librarie: [],
+    db: [],
+    environment: [],
+    experience: [],
+    time_commit: [],
+    motivation: [],
+  });
+
+  // 初期データの取得
+  useEffect(() => {
+    const fetchUsers = async () => {
+      console.log("front SearchPage 初回postのtry前パス ");
+      console.log("リクエストURL:", process.env.REACT_APP_API_URL + '/api/search/search');
+      try {
+        const response = await axios.post('/api/search/search', {});
+        console.log("front SearchPage 初回postのデータ = ", response);
+        const data = response.data?.initialData || []; // データが無い場合に空配列を設定
+        setUsers(data);
+        setFilteredUsers(data); // 初期データをそのまま表示
+      } catch (error) {
+        console.error('データの取得に失敗しました:', error);
+      }
     };
+    fetchUsers();
+  }, []);
+
+  // フィルターの適用処理
+  const applyFilters = async () => {
+    try {
+      const response = await axios.post('/api/search/filter', {
+        filters: selectedFilters,
+      });
+
+      console.log("filter response data:", response.data);
+      console.log("parsed filteredData:", response.data?.filteredData);
+
+      console.log("front SearchPage filterの戻り値 = ", response);
+      const data = Array.isArray(response.data?.filteredData) ? response.data.filteredData : []; // フィルタ結果が無い場合に空配列を設定
+      setFilteredUsers(data); 
+    } catch (error) {
+      console.error('フィルター適用中にエラーが発生しました:', error);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -56,7 +62,6 @@ const UserSearchPage = () => {
       <CategoryFilter 
         selectedFilters={selectedFilters} 
         setSelectedFilters={setSelectedFilters} 
-        applyFilters={applyFilters} // フィルター適用関数を渡す
       />
       {/* フィルターを適用ボタン */}
       <button
@@ -66,7 +71,7 @@ const UserSearchPage = () => {
         フィルターを適用
       </button>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6">
-        {filteredUsers.map(user => (
+        {Array.isArray(filteredUsers) && filteredUsers.map(user => (
           <UserCard key={user.id} user={user} />
         ))}
       </div>

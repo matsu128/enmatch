@@ -1,3 +1,5 @@
+require('dotenv').config();
+const bcrypt = require('bcrypt'); // bcryptをインポート
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -5,7 +7,6 @@ const prisma = new PrismaClient();
 // ログイン処理
 exports.login = async (req, res) => {
   try {
-    console.log("backのauthControllerのtryパス");
     const { email, password } = req.body;
 
     // ユーザーをメールアドレスで検索
@@ -13,13 +14,14 @@ exports.login = async (req, res) => {
       where: { email }
     });
 
+    console.log("back authCtrパス");
+
     if (!user) {
       return res.status(400).json({ message: 'ユーザーが見つかりません' });
     }
 
-    // パスワードを比較
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    // パスワードを比較 ハッシュ化はフロント側で対応済
+    if (password !== user.password) {
       return res.status(400).json({ message: 'パスワードが間違っています' });
     }
 

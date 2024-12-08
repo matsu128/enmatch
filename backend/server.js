@@ -1,25 +1,36 @@
+require("dotenv").config();
 const express = require('express');
 const path = require('path');
-const authRoutes = require('./routes/authRoutes'); // authRoutesを読み込む
+const cors = require('cors'); // CORSパッケージをインポート
+const authRoutes = require('./routes/authRoutes'); // 認証関連のルート
+const searchRoutes = require('./routes/searchRoutes'); // 検索関連のルート
 
 const app = express();
-const port = process.env.PORT || 5001;
+// const port = process.env.PORT || 5001;
+const port = 5001;
 
-// ミドルウェア (例: JSONボディのパース)
+
+// CORSの設定
+const corsOptions = {
+  // origin: 'https://enmatch.jp', // フロントエンドのURL
+  origin: 'http://localhost:5001',
+  methods: 'GET, POST, PUT, DELETE',
+  allowedHeaders: 'Content-Type, Authorization',
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+// ミドルウェア
 app.use(express.json());
 
-// APIエンドポイント (authRoutesを使用)
-app.use('/api/auth', authRoutes); // '/api/auth' でルートをまとめる
+// APIエンドポイント
+app.use('/api/auth', authRoutes);
+app.use('/api/search', searchRoutes);
 
-// 静的ファイルの提供 (Reactのビルド済みファイル)
+// 静的ファイルの提供（フロントエンドのビルド済みファイルを提供）
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// Reactアプリケーションのルーティング (フロントエンド)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
-
-// サーバーを起動
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// HTTPサーバーの作成
+app.listen(port, '0.0.0.0', () => {
+  console.log(`HTTP Server is running on port ${port}`);
 });
