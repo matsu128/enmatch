@@ -32,7 +32,6 @@ const UserSearchPage = () => {
       // コメントアウトされた本番用データ取得コード
       // try {
       //   const response = await axios.post('/api/search/search', {});
-      //   console.log("front SearchPage 初回postのデータ = ", response);
       //   const data = response.data?.initialData || []; // データが無い場合に空配列を設定
       //   setUsers(data);
       //   setFilteredUsers(data); // 初期データをそのまま表示

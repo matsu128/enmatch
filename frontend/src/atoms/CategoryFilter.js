@@ -46,16 +46,19 @@ const CategoryFilter = ({ selectedFilters, setSelectedFilters }) => {
   return (
     <div className="flex flex-col items-center w-[96%] mx-auto px-2">
       <div className="w-full p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"> {/* スマホ時は1列、デスクトップ時は2列 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {Object.keys(categories).map((category) => (
-            <div key={category} className="flex flex-col">
-              <h3 className="text-xl text-center font-semibold mb-4 text-gray-800 inline">
+            <div
+              key={category}
+              className="flex flex-col p-4 border border-gray-300 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleCategoryVisibility(category);
+              }}
+            >
+              <h3 className="text-xl text-center font-semibold mb-4 text-gray-800">
                 <span
                   className="cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleCategoryVisibility(category);
-                  }}
                 >
                   {category === 'language' && '言語'}
                   {category === 'framework' && 'フレームワーク'}
@@ -70,14 +73,14 @@ const CategoryFilter = ({ selectedFilters, setSelectedFilters }) => {
 
               {categoryVisibility[category] && (
                 <div className="overflow-x-auto whitespace-nowrap px-4 rounded-lg max-w-[96%]">
-                  <div className="inline-flex gap-4 flex-nowrap"> {/* タグが横スクロールできるように指定 */}
+                  <div className="inline-flex gap-4 flex-nowrap">
                     {categories[category].map((item) => (
                       <label
                         key={item}
-                        className={`cursor-pointer rounded-full px-4 py-2 transition-all duration-300 ease-in-out flex items-center justify-center text-sm ${
+                        className={`cursor-pointer rounded-full px-4 py-2 border-2 border-gray-400 transition-all duration-300 ease-in-out flex items-center justify-center text-sm shadow-md ${
                           selectedFilters[category]?.includes(item)
-                            ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500'
+                            ? 'bg-gray-800 text-white border-gray-800'
+                            : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow-sm'
                         }`}
                       >
                         <input
