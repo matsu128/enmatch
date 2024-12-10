@@ -4,7 +4,7 @@ import CategoryFilter from '../../atoms/CategoryFilter';
 import axios from 'axios';
 
 // front開発用のdummy data
-import dummyData from './dummyData';
+// import dummyData from './dummyData';
 
 // ベースURLの設定
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -29,52 +29,52 @@ const UserSearchPage = () => {
       console.log("front SearchPage 初回postのtry前パス ");
       console.log("リクエストURL:", process.env.REACT_APP_API_URL + '/api/search/search');
 
-      // コメントアウトされた本番用データ取得コード
-      // try {
-      //   const response = await axios.post('/api/search/search', {});
-      //   const data = response.data?.initialData || []; // データが無い場合に空配列を設定
-      //   setUsers(data);
-      //   setFilteredUsers(data); // 初期データをそのまま表示
-      // } catch (error) {
-      //   console.error('データの取得に失敗しました:', error);
-      // }
+      // 本番用データ取得コードを有効化
+      try {
+        const response = await axios.post('/api/search/search', {});
+        const data = response.data?.initialData || []; // データが無い場合に空配列を設定
+        setUsers(data);
+        setFilteredUsers(data); // 初期データをそのまま表示
+      } catch (error) {
+        console.error('データの取得に失敗しました:', error);
+      }
 
-      // front開発用のdummy dataを使用
-      console.log("front開発用: dummyDataを使用");
-      setUsers(dummyData);
-      setFilteredUsers(dummyData);
+      // front開発用: dummyDataはコメントアウト
+      // console.log("front開発用: dummyDataを使用");
+      // setUsers(dummyData);
+      // setFilteredUsers(dummyData);
     };
     fetchUsers();
   }, []);
 
   // フィルターの適用処理
   const applyFilters = async () => {
-    // コメントアウトされた本番用フィルター処理コード
-    // try {
-    //   const response = await axios.post('/api/search/filter', {
-    //     filters: selectedFilters,
-    //   });
+    // 本番用フィルター処理コードを有効化
+    try {
+      const response = await axios.post('/api/search/filter', {
+        filters: selectedFilters,
+      });
 
-    //   console.log("filter response data:", response.data);
-    //   console.log("parsed filteredData:", response.data?.filteredData);
+      console.log("filter response data:", response.data);
+      console.log("parsed filteredData:", response.data?.filteredData);
 
-    //   console.log("front SearchPage filterの戻り値 = ", response);
-    //   const data = Array.isArray(response.data?.filteredData) ? response.data.filteredData : []; // フィルタ結果が無い場合に空配列を設定
-    //   setFilteredUsers(data); 
-    // } catch (error) {
-    //   console.error('フィルター適用中にエラーが発生しました:', error);
-    // }
+      console.log("front SearchPage filterの戻り値 = ", response);
+      const data = Array.isArray(response.data?.filteredData) ? response.data.filteredData : []; // フィルタ結果が無い場合に空配列を設定
+      setFilteredUsers(data); 
+    } catch (error) {
+      console.error('フィルター適用中にエラーが発生しました:', error);
+    }
 
-    // front開発用のdummy dataを使用してフィルタリング
-    console.log("front開発用: dummyDataでフィルタリングを実施");
-    const filtered = dummyData.filter(user => {
-      // フィルタ条件に基づいてダミーデータを絞り込むロジックを実装
-      return Object.keys(selectedFilters).every(key => 
-        selectedFilters[key].length === 0 || 
-        selectedFilters[key].some(filter => user[key]?.includes(filter))
-      );
-    });
-    setFilteredUsers(filtered);
+    // front開発用: dummyDataでのフィルタリングはコメントアウト
+    // console.log("front開発用: dummyDataでフィルタリングを実施");
+    // const filtered = dummyData.filter(user => {
+    //   // フィルタ条件に基づいてダミーデータを絞り込むロジックを実装
+    //   return Object.keys(selectedFilters).every(key => 
+    //     selectedFilters[key].length === 0 || 
+    //     selectedFilters[key].some(filter => user[key]?.includes(filter))
+    //   );
+    // });
+    // setFilteredUsers(filtered);
   };
 
   return (
