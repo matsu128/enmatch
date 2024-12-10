@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // axiosをインポート
+import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
+import axios from 'axios';
 
 const LoginPage = () => {
   const [email, setEmail] = useState(''); // メールアドレス
   const [password, setPassword] = useState(''); // パスワード
   const [error, setError] = useState(null); // エラーメッセージ
+  const navigate = useNavigate(); // useNavigateフックを初期化
 
   // フォーム送信時の処理
   const loginSubmitHandler = async (e) => {
     e.preventDefault(); // デフォルトのフォーム送信動作を防止
 
     try {
-
       // ログインリクエストをバックエンドに送信
       const response = await axios.post('/api/auth/login', {
         email: email.trim(),
@@ -20,7 +21,7 @@ const LoginPage = () => {
 
       // 成功時の処理
       sessionStorage.setItem('token', response.data.token); // トークンをセッションストレージに保存
-      window.location.href = '/'; // ホームまたはダッシュボードページにリダイレクト
+      navigate('/'); // ホームまたはダッシュボードページにリダイレクト
     } catch (error) {
       // エラーハンドリング
       if (error.response) {
@@ -40,7 +41,7 @@ const LoginPage = () => {
 
   // サインアップページへのリダイレクト処理
   const joinBloggerHandler = () => {
-    window.location.href = '/signup'; // サインアップページにリダイレクト
+    navigate('/signup'); // サインアップページにリダイレクト
   };
 
   return (
