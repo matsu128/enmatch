@@ -50,25 +50,18 @@ const CategoryFilter = ({ selectedFilters, setSelectedFilters }) => {
           {Object.keys(categories).map((category) => (
             <div
               key={category}
-              className="flex flex-col p-4 border border-gray-300 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-lg"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleCategoryVisibility(category);
-              }}
+              className="flex flex-col p-4 border border-gray-300 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
+              onClick={() => toggleCategoryVisibility(category)}
             >
               <h3 className="text-xl text-center font-semibold mb-4 text-gray-800">
-                <span
-                  className="cursor-pointer"
-                >
-                  {category === 'language' && '言語'}
-                  {category === 'framework' && 'フレームワーク'}
-                  {category === 'librarie' && 'ライブラリ'}
-                  {category === 'db' && 'データベース'}
-                  {category === 'environment' && '環境'}
-                  {category === 'experience' && '経験'}
-                  {category === 'time_commit' && 'リソース'}
-                  {category === 'motivation' && 'モチベーション'}
-                </span>
+                {category === 'language' && '言語'}
+                {category === 'framework' && 'フレームワーク'}
+                {category === 'librarie' && 'ライブラリ'}
+                {category === 'db' && 'データベース'}
+                {category === 'environment' && '環境'}
+                {category === 'experience' && '経験'}
+                {category === 'time_commit' && 'リソース'}
+                {category === 'motivation' && 'モチベーション'}
               </h3>
 
               {categoryVisibility[category] && (
@@ -82,6 +75,7 @@ const CategoryFilter = ({ selectedFilters, setSelectedFilters }) => {
                             ? 'bg-gray-800 text-white border-gray-800'
                             : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow-sm'
                         }`}
+                        onClick={(e) => e.stopPropagation()} // Checkbox の挙動を保護
                       >
                         <input
                           type="checkbox"

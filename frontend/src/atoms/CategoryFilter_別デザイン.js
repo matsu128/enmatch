@@ -44,75 +44,59 @@ const CategoryFilter = ({ selectedFilters, setSelectedFilters }) => {
   };
 
   return (
-    <div className="w-[96%] mx-auto px-2">
-      <div className="overflow-x-auto whitespace-nowrap px-4">
-        <div className="flex gap-4 justify-between">
+    <div className="flex flex-col items-center w-[96%] mx-auto px-2">
+      <div className="w-full p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"> {/* スマホ時は1列、デスクトップ時は2列 */}
           {Object.keys(categories).map((category) => (
-            <div
-              key={category}
-              className="cursor-pointer px-6 py-3 rounded-full bg-white shadow-lg border border-gray-300 hover:border-gray-500 transition-all duration-300"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleCategoryVisibility(category);
-              }}
-            >
-              {category === 'language' && '言語'}
-              {category === 'framework' && 'フレームワーク'}
-              {category === 'librarie' && 'ライブラリ'}
-              {category === 'db' && 'データベース'}
-              {category === 'environment' && '環境'}
-              {category === 'experience' && '経験'}
-              {category === 'time_commit' && 'リソース'}
-              {category === 'motivation' && 'モチベーション'}
+            <div key={category} className="flex flex-col">
+              <h3 className="text-xl text-center font-semibold mb-4 text-gray-800 inline">
+                <span
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleCategoryVisibility(category);
+                  }}
+                >
+                  {category === 'language' && '言語'}
+                  {category === 'framework' && 'フレームワーク'}
+                  {category === 'librarie' && 'ライブラリ'}
+                  {category === 'db' && 'データベース'}
+                  {category === 'environment' && '環境'}
+                  {category === 'experience' && '経験'}
+                  {category === 'time_commit' && 'リソース'}
+                  {category === 'motivation' && 'モチベーション'}
+                </span>
+              </h3>
+
+              {categoryVisibility[category] && (
+                <div className="overflow-x-auto whitespace-nowrap px-4 rounded-lg max-w-[96%]">
+                  <div className="inline-flex gap-4 flex-nowrap"> {/* タグが横スクロールできるように指定 */}
+                    {categories[category].map((item) => (
+                      <label
+                        key={item}
+                        className={`cursor-pointer rounded-full px-4 py-2 transition-all duration-300 ease-in-out flex items-center justify-center text-sm ${
+                          selectedFilters[category]?.includes(item)
+                            ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          value={item}
+                          checked={selectedFilters[category]?.includes(item)}
+                          onChange={(e) => handleFilterChange(e, category)}
+                          className="hidden"
+                        />
+                        {item}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </div>
-
-      {Object.keys(categories).map((category) => (
-        categoryVisibility[category] && (
-          <div key={category} className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg w-[80%] max-h-[70%] overflow-auto">
-              <h3 className="text-2xl font-bold mb-4">
-                {category === 'language' && '言語'}
-                {category === 'framework' && 'フレームワーク'}
-                {category === 'librarie' && 'ライブラリ'}
-                {category === 'db' && 'データベース'}
-                {category === 'environment' && '環境'}
-                {category === 'experience' && '経験'}
-                {category === 'time_commit' && 'リソース'}
-                {category === 'motivation' && 'モチベーション'}
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {categories[category].map((item) => (
-                  <label
-                    key={item}
-                    className={`cursor-pointer px-6 py-3 rounded-full text-sm font-semibold transition-colors duration-300 ${
-                      selectedFilters[category].includes(item)
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-gray-100 hover:bg-gray-200'
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      value={item}
-                      className="hidden"
-                      onChange={(e) => handleFilterChange(e, category)}
-                    />
-                    {item}
-                  </label>
-                ))}
-              </div>
-              <button
-                className="mt-4 px-6 py-3 bg-gray-800 text-white rounded-full transition-all duration-300 hover:bg-gray-700"
-                onClick={() => toggleCategoryVisibility(category)}
-              >
-                閉じる
-              </button>
-            </div>
-          </div>
-        )
-      ))}
     </div>
   );
 };
