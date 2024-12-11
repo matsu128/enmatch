@@ -1,10 +1,9 @@
 require('dotenv').config();
-const bcrypt = require('bcrypt'); // bcryptをインポート
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// ログイン処理
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -14,22 +13,28 @@ exports.login = async (req, res) => {
       where: { email }
     });
 
-    console.log("back authCtrパス");
-
     if (!user) {
       return res.status(400).json({ message: 'ユーザーが見つかりません' });
     }
 
-    // パスワードを比較 ハッシュ化はフロント側で対応済
-    if (password !== user.password) {
+    // パスワードを比較 (bcryptでハッシュ化されたパスワードを比較)
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return res.status(400).json({ message: 'パスワードが間違っています' });
     }
 
     // JWTトークンを発行
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // トークンをレスポンスとして返す
-    res.json({ token });
+    // HTTP-Onlyクッキーとしてトークンを保存
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true, // HTTPSのみ（ローカル開発中はコメントアウトする）
+      sameSite: 'strict',
+      maxAge: 3600000 // 1時間
+    });
+
+    res.status(200).json({ message: 'ログイン成功' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'サーバーエラー' });
