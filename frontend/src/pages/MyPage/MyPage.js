@@ -1,47 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import ProfileSection from './ProfileSection';
+import React, { useState } from 'react';
 import CategoryFilter from '../../atoms/CategoryFilter';
-
 
 // MyPageコンポーネント
 const MyPage = () => {
-    // プロフィール情報の管理（省略可能）
-    const [profile, setProfile] = useState({
-        name: 'John Doe',
-        shortDescription: 'Software Developer',
-        longDescription: 'Building innovative web applications.',
-        avatar: 'https://via.placeholder.com/150',
+    // 入力項目の状態管理
+    const [contactInfo, setContactInfo] = useState({
+        name: '',
+        email: '',
+        phone: '',
     });
 
     const [selectedFilters, setSelectedFilters] = useState({
-        languages: [],
-        frameworks: [],
-        libraries: [],
-        databases: [],
-        environments: [],
+        language: [],
+        framework: [],
+        librarie: [],
+        db: [],
+        environment: [],
         experience: [],
-        timeCommitment: [],
+        time_commit: [],
         motivation: [],
-    });
+      });
 
-    const [isFilterChanged, setIsFilterChanged] = useState(false);
-
-    // CategoryFilterの状態の変化を監視して、フィルタが変更された際にボタンを表示する
-    useEffect(() => {
-        setIsFilterChanged(true);
-    }, [selectedFilters]);
-
-    // フィルタ変更の保存処理
+    // 変更保存処理
     const saveChanges = () => {
-        console.log("変更が保存されました:", selectedFilters);
-        setIsFilterChanged(false);  // 保存後にボタンを非表示に戻す
+        console.log("連絡先情報:", contactInfo);
+        console.log("フィルタ:", selectedFilters);
     };
 
     return (
-        <div className="flex flex-col items-center">
-            <h1 className="text-3xl font-semibold mt-8 mb-4">マイページ</h1>
+        <div className="flex flex-col items-center mb-6">
+            <h1 className="text-3xl font-semibold mt-2 mb-4">マイページ</h1>
 
-            <ProfileSection profile={profile} />
+            {/* 連絡先情報セクション */}
+            <div className="w-full max-w-2xl mb-6 p-4 rounded-lg shadow-lg border border-gray-300">
+                <h2 className="text-xl font-medium mb-4">連絡先情報</h2>
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">名前</label>
+                    <input
+                        type="text"
+                        value={contactInfo.name}
+                        onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-lg shadow-inner"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">メールアドレス</label>
+                    <input
+                        type="email"
+                        value={contactInfo.email}
+                        onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-lg shadow-inner"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">電話番号</label>
+                    <input
+                        type="tel"
+                        value={contactInfo.phone}
+                        onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-lg shadow-inner"
+                    />
+                </div>
+            </div>
 
             {/* CategoryFilterコンポーネント */}
             <CategoryFilter
@@ -49,15 +69,13 @@ const MyPage = () => {
                 setSelectedFilters={setSelectedFilters}
             />
 
-            {/* フィルター変更があった場合のみ表示する「変更を保存」ボタン */}
-            {isFilterChanged && (
-                <button
-                    className="mt-4 bg-gradient-to-r from-blue-400 to-blue-300 text-white py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                    onClick={saveChanges}
-                >
-                    変更を保存
-                </button>
-            )}
+            {/* 保存ボタン */}
+            <button
+                className="mt-4 bg-gradient-to-r from-gray-400 to-gray-300 text-black py-2 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300"
+                onClick={saveChanges}
+            >
+                変更を保存
+            </button>
         </div>
     );
 };

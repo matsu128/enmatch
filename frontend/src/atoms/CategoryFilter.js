@@ -59,7 +59,7 @@ const CategoryFilter = ({ selectedFilters, setSelectedFilters }) => {
                 {category === 'librarie' && 'ライブラリ'}
                 {category === 'db' && 'データベース'}
                 {category === 'environment' && '環境'}
-                {category === 'experience' && '経験'}
+                {category === 'experience' && '経験年数'}
                 {category === 'time_commit' && 'リソース'}
                 {category === 'motivation' && 'モチベーション'}
               </h3>

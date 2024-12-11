@@ -23,29 +23,25 @@ const UserSearchPage = () => {
     motivation: [],
   });
 
-  // 初期データの取得
+  // 初期ロード
   useEffect(() => {
     const fetchUsers = async () => {
-      console.log("front SearchPage 初回postのtry前パス ");
-      console.log("リクエストURL:", process.env.REACT_APP_API_URL + '/api/search/search');
-
-      // 本番用データ取得コードを有効化
       try {
-        const response = await axios.post('/api/search/search', {});
-        const data = response.data?.initialData || []; // データが無い場合に空配列を設定
+        const response = await axios.post('/api/search/search', {}, {
+          withCredentials: true // HTTPクッキーを含める設定
+        });
+        const data = response.data?.initialData || [];
+        console.log("front,search,初期ロード,帰ってきたデータ = ", data);
         setUsers(data);
-        setFilteredUsers(data); // 初期データをそのまま表示
+        setFilteredUsers(data);
       } catch (error) {
         console.error('データの取得に失敗しました:', error);
       }
-
-      // front開発用: dummyDataはコメントアウト
-      // console.log("front開発用: dummyDataを使用");
-      // setUsers(dummyData);
-      // setFilteredUsers(dummyData);
     };
+  
     fetchUsers();
   }, []);
+  
 
   // フィルターの適用処理
   const applyFilters = async () => {
