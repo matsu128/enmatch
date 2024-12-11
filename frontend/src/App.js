@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserSearchPage from './pages/UserSearch/UserSearchPage_local';
+import UserSearchPage from './pages/UserSearch/UserSearchPage';
 import ChatPage from './pages/Chat/ChatPage';
 import MyPage from './pages/MyPage/MyPage';
 import LoginPage from './pages/Login/LoginPage';
@@ -35,9 +35,21 @@ function App() {
             </>
           } 
         />
+
+        {/* '/mypage' パスに対して Header を表示 */}
+        <Route 
+          path="/mypage" 
+          element={
+            <>
+              <Header isLoggedIn={false} /> {/* ヘッダーの表示 */}
+              <div className="mt-16"> {/* ヘッダーの高さ分だけ余白を追加 */}
+                <MyPage /> {/* チャットページのコンテンツ */}
+              </div>
+            </>
+          } 
+        />
         
         {/* その他のページ */}
-        <Route path="/mypage" element={<MyPage />} />
         <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
