@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserSearchPage from './pages/UserSearch/UserSearchPage';
-import ChatPage from './pages/Chat/ChatPage';
-import MyPage from './pages/MyPage/MyPage';
-import LoginPage from './pages/Login/LoginPage';
+import UserSearchPage from './pages/UserSearchPage';
+import ChatPage from './pages/ChatPage';
+import MyPage from './pages/MyPage';
+import LoginPage from './pages/LoginPage';
 import Header from './atoms/Header'; // Headerをインポート
 
 function App() {
