@@ -1,42 +1,47 @@
+// src/molecules/UserCard.js
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import Button from "../atoms/Button";
 
-const UserCard = ({ user }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const navigate = useNavigate();
-
+const UserCard = ({ user, onClick, isSelected, handleChatClick }) => {
   const userFields = [
     { label: "名前", key: "name" },
     { label: "プログラミング言語", key: "language" },
+    { label: "フレームワーク", key: "framework" },
+    { label: "ライブラリ", key: "librarie" },
+    { label: "データベース", key: "db" },
+    { label: "環境", key: "environment" },
     { label: "経験", key: "experience" },
+    { label: "コミット可能時間", key: "time_commit" },
+    { label: "モチベーション", key: "motivation" },
   ];
 
-  const handleChatClick = (e) => {
-    e.stopPropagation();
-    navigate("/chat");
-  };
+  const initialFields = ["name", "language", "experience"];
 
   return (
     <div
-      className={`p-4 border rounded-lg shadow-md ${
-        isExpanded ? "bg-gray-100" : ""
-      }`}
-      onClick={() => setIsExpanded(!isExpanded)}
+      className={`relative transition-transform transform duration-300 ease-in-out ${
+        isSelected ? "scale-105 shadow-lg" : "shadow-md"
+      } border border-gray-300 rounded-lg p-4 bg-white hover:scale-105 hover:shadow-xl cursor-pointer`}
+      onClick={onClick}
     >
-      {userFields.map((field) => (
-        <div key={field.key}>
-          <strong>{field.label}: </strong>
-          {user[field.key]}
-        </div>
-      ))}
-      {isExpanded && (
-        <button
-          onClick={handleChatClick}
-          className="mt-4 bg-blue-500 text-white py-1 px-3 rounded"
-        >
-          チャット
-        </button>
-      )}
+      {userFields.map((field, index) => {
+        if (!initialFields.includes(field.key) && !isSelected) {
+          return null;
+        }
+
+        return (
+          <div key={index} className="mb-2">
+            <p className="text-sm text-gray-700">
+              <strong>{field.label}:</strong> {user[field.key] || "N/A"}
+            </p>
+            {isSelected && field.key === "motivation" && (
+              <div className="mt-3 flex justify-center w-full">
+                <Button onClick={handleChatClick} label="チャット" className="bg-gradient-to-r from-gray-700 to-gray-900" />
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };

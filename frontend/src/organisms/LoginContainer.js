@@ -1,7 +1,7 @@
 import React from 'react';
-import LoginForm from '../../molecules/LoginForm';
-import ErrorMessage from '../../atoms/ErrorMessage';
-import Button from '../../atoms/Button';
+import LoginForm from '../molecules/LoginForm';
+import ErrorMessage from '../atoms/ErrorMessage';
+import Button from '../atoms/Button';
 
 const LoginContainer = ({
   email,

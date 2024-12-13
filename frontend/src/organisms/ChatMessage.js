@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import InputField from '../../atoms/InputField';
+import InputField from '../atoms/InputField';
 
 const ChatMessage = ({ chatData, onBack }) => {
   const [message, setMessage] = useState('');

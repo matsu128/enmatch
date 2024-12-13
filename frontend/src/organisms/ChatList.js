@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatItem from '../../molecules/ChatItem';
+import ChatItem from '../molecules/ChatItem';
 
 const ChatList = ({ chats, onChatSelect }) => (
   <div className="chat-list">
