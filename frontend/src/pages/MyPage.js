@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ContactInfoSection from '../molecules/ContactInfoSection';
 import CategoryFilter from '../organisms/CategoryFilter';
 import Button from '../atoms/Button';
@@ -21,9 +22,56 @@ const MyPage = () => {
     motivation: [],
   });
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/api/user/user', { withCredentials: true }); // APIエンドポイントにGETリクエスト
+        const userData = response.data;
+
+        console.log('取得したユーザー情報:', userData);
+
+        // 取得したデータを初期値として設定
+        setContactInfo({
+          name: userData.name || '',
+          email: userData.email || '',
+          phone: userData.phone || '',
+        });
+
+        // 必要ならフィルタ情報も初期化
+        setSelectedFilters({
+          language: userData.language ? [userData.language] : [],
+          framework: userData.framework ? [userData.framework] : [],
+          librarie: userData.librarie ? [userData.librarie] : [],
+          db: userData.db ? [userData.db] : [],
+          environment: userData.environment ? [userData.environment] : [],
+          experience: userData.experience ? [userData.experience] : [],
+          time_commit: userData.time_commit ? [userData.time_commit] : [],
+          motivation: userData.motivation ? [userData.motivation] : [],
+        });
+      } catch (error) {
+        console.error('ユーザー情報取得に失敗しました:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const saveChanges = () => {
     console.log('連絡先情報:', contactInfo);
     console.log('フィルタ:', selectedFilters);
+
+    // サーバーに変更を保存するAPIリクエスト例
+    axios
+      .post('/api/user/update', {
+        contactInfo,
+        filters: selectedFilters,
+      })
+      .then((response) => {
+        console.log('変更が保存されました:', response.data);
+      })
+      .catch((error) => {
+        console.error('変更保存に失敗しました:', error);
+      });
   };
 
   return (
