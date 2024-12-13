@@ -13,6 +13,9 @@ exports.verifyToken = (req, res, next) => {
     req.user = decoded; // デコードしたトークン情報をリクエストオブジェクトに追加
     next();
   } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'トークンの有効期限が切れています' });
+    }
     console.error('トークン検証エラー:', error);
     return res.status(401).json({ message: '無効なトークンです' });
   }

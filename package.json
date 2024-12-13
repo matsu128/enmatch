@@ -4,5 +4,8 @@
   },
   "scripts": {
     "format": "prettier --write ."
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7"
   }
 }
