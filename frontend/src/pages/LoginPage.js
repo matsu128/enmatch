@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import LoginContainer from '../organisms/Login/LoginContainer';
+import LoginContainer from '../organisms/LoginContainer';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');

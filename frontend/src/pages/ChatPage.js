@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ChatList from '../organisms/Chat/ChatList';
-import ChatMessage from '../organisms/Chat/ChatMessage';
+import ChatList from '../organisms/ChatList';
+import ChatMessage from '../organisms/ChatMessage';
 import chatDummyData from '../data/ChatDummyData';
 
 const ChatPage = () => {
