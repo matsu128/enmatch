@@ -24,6 +24,7 @@ exports.login = async (req, res) => {
     }
 
     // JWTトークンを発行
+    // DBのuserIdを合わせて詰める(他の画面でuserIdに紐付けてDBから取得するため)
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     // HTTP-Onlyクッキーとしてトークンを保存
