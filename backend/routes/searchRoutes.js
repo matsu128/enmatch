@@ -8,5 +8,4 @@ router.post('/search', searchUsers);
 // 絞り込みエンドポイント
 router.post('/filter', searchUsers);
 
-
 module.exports = router;

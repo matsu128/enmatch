@@ -5,12 +5,12 @@ import UserList from "../organisms/UserList";
 import Button from "../atoms/Button";
 
 // front開発用のdummy data
-import dummyData from "./dummyData";
+// import dummyData from "./dummyData";
 
 // ベースURLの設定
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
-const UserSearchPage = () => {
+const UserSearchPage = ({ onLoginClick }) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({
@@ -28,22 +28,23 @@ const UserSearchPage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       console.log("初期データ取得開始");
-      console.log("リクエストURL:", process.env.REACT_APP_API_URL + "/api/search/search");
+      console.log("リクエストURL:", process.env.REACT_APP_API_URL + "api/search/search");
 
       // コメントアウトされた本番用データ取得コード
-      // try {
-      //   const response = await axios.post("/api/search/search", {});
-      //   const data = response.data?.initialData || []; // データが無い場合に空配列を設定
-      //   setUsers(data);
-      //   setFilteredUsers(data); // 初期データをそのまま表示
-      // } catch (error) {
-      //   console.error("データの取得に失敗しました:", error);
-      // }
+      try {
+        const response = await axios.post("api/search/search", {});
+        const data = response.data?.initialData || []; // データが無い場合に空配列を設定
+        setUsers(data);
+        setFilteredUsers(data); // 初期データをそのまま表示
+        applyFilters(data); // 初期表示時もフィルター適用処理を実施
+      } catch (error) {
+        console.error("データの取得に失敗しました:", error);
+      }
 
       // front開発用のdummy dataを使用
-      console.log("front開発用: dummyDataを使用");
-      setUsers(dummyData);
-      setFilteredUsers(dummyData);
+      // console.log("front開発用: dummyDataを使用");
+      // setUsers(dummyData);
+      // setFilteredUsers(dummyData);
     };
     fetchUsers();
   }, []);
@@ -53,25 +54,25 @@ const UserSearchPage = () => {
     console.log("フィルターを適用");
 
     // コメントアウトされた本番用フィルター処理コード
-    // try {
-    //   const response = await axios.post("/api/search/filter", {
-    //     filters: selectedFilters,
-    //   });
-    //   const data = Array.isArray(response.data?.filteredData) ? response.data.filteredData : [];
-    //   setFilteredUsers(data);
-    // } catch (error) {
-    //   console.error("フィルター適用中にエラーが発生しました:", error);
-    // }
+    try {
+      const response = await axios.post("/api/search/filter", {
+        filters: selectedFilters,
+      });
+      const data = Array.isArray(response.data?.filteredData) ? response.data.filteredData : [];
+      setFilteredUsers(data);
+    } catch (error) {
+      console.error("フィルター適用中にエラーが発生しました:", error);
+    }
 
     // front開発用のdummy dataを使用してフィルタリング
-    const filtered = dummyData.filter((user) =>
-      Object.keys(selectedFilters).every(
-        (key) =>
-          selectedFilters[key].length === 0 ||
-          selectedFilters[key].some((filter) => user[key]?.includes(filter))
-      )
-    );
-    setFilteredUsers(filtered);
+    // const filtered = dummyData.filter((user) =>
+    //   Object.keys(selectedFilters).every(
+    //     (key) =>
+    //       selectedFilters[key].length === 0 ||
+    //       selectedFilters[key].some((filter) => user[key]?.includes(filter))
+    //   )
+    // );
+    // setFilteredUsers(filtered);
   };
 
   return (
@@ -88,7 +89,7 @@ const UserSearchPage = () => {
         onClick={applyFilters}
         className="mt-8 w-full max-w-xs bg-gradient-to-r from-teal-400 to-teal-300 text-white py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
       />
-      <UserList users={filteredUsers} />
+      <UserList users={filteredUsers} onLoginClick={onLoginClick} />
     </div>
   );
 };

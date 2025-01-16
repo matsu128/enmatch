@@ -6,6 +6,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "cookie-parser": "^1.4.7"
+    "cookie-parser": "^1.4.7",
+    "redis": "^4.7.0"
   }
 }

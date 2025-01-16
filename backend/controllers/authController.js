@@ -1,41 +1,76 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid'); // UUIDライブラリ
 const prisma = new PrismaClient();
+
+// server.jsからRedisクライアントをインポート
+const { redisClient } = require('../server');
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // ユーザーをメールアドレスで検索
+    // データベースからユーザー情報を取得
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        icon: true,
+        password: true,
+      },
     });
 
+    // ユーザーが存在しない場合
     if (!user) {
       return res.status(400).json({ message: 'ユーザーが見つかりません' });
     }
 
-    // パスワードを比較 (bcryptでハッシュ化されたパスワードを比較)
+    // TODO Local用はハッシュ化してないので飛ばす
+    /*
+    // パスワードを検証
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'パスワードが間違っています' });
     }
+    */
 
-    // JWTトークンを発行
-    // DBのuserIdを合わせて詰める(他の画面でuserIdに紐付けてDBから取得するため)
+    // JWTトークンを生成
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // HTTP-Onlyクッキーとしてトークンを保存
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: true, // HTTPSのみ（ローカル開発中はコメントアウトする）
-      sameSite: 'strict',
-      maxAge: 3600000 // 1時間
-    });
+    // UUIDv4を使用してランダムなIDを生成
+    const randomId = uuidv4();
 
-    res.status(200).json({ message: 'ログイン成功' });
+    // Redisにトークンとユーザー情報を保存 (有効期限: 1時間)
+    const redisData = JSON.stringify({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        icon: user.icon,
+      },
+    });
+    await redisClient.setEx(randomId, 3600, redisData);
+
+    // Redisからデータを取得
+    const storedData = await redisClient.get(randomId);
+    if (!storedData) {
+      return res.status(500).json({ message: 'Redisにデータが保存されていません' });
+    }
+
+    // 保存したデータをパース
+    const parsedData = JSON.parse(storedData);
+
+    // randomIdと一緒にユーザー情報（name, icon）を返却
+    res.status(200).json({
+      message: 'ログイン成功',
+      randomId,
+      user: {
+        icon: parsedData.user.icon,
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'サーバーエラー' });
