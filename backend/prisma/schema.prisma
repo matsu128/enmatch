@@ -8,31 +8,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model User {
   id          Int       @id @default(autoincrement())
   name        String
-  email       String    @unique
+  email       String    @unique // ユーザーのメールアドレスはユニーク
   password    String
-  icon        String?
-  language    String?
-  framework   String?
-  librarie    String?
-  db          String?
-  experience  Int?
-  time_commit String?
-  environment String?
-  short_bio   String?   @db.VarChar(10)
-  full_bio    String?   @db.VarChar(200)
-  motivation  String?
-  messages    Message[]
+  icon        String?   // プロフィールアイコン（任意）
+  language    String?   // 使用言語（任意）
+  framework   String?   // 使用フレームワーク（任意）
+  librarie    String?   // 使用ライブラリ（任意）
+  db          String?   // 使用データベース（任意）
+  experience  Int?      // 経験年数（任意）
+  time_commit String?   // コミット可能時間（任意）
+  environment String?   // 環境設定（任意）
+  short_bio   String?   @db.VarChar(10)  // 短い自己紹介（最大10文字）
+  full_bio    String?   @db.VarChar(200) // 詳しい自己紹介（最大200文字）
+  motivation  String?   // モチベーション（任意）
+  randomId    String?   // backendで生成したランダムID
+  groups      Group[]   // ユーザーが所属するグループ
+  messages    Message[] // ユーザーが送信したメッセージ
+}
+
+model Group {
+  id         Int       @id @default(autoincrement())
+  name       String?   // グループ名（任意）
+  created_at DateTime  @default(now()) // グループ作成日時
+  users      User[]    // グループに所属する複数のユーザー
+  messages   Message[] // グループ内のメッセージ
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  user_id   Int
-  icon      String
-  name      String
-  message   String
-  timestamp DateTime @default(now())
-  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id         Int       @id @default(autoincrement())
+  group_id   Int       // 紐づくグループのID
+  user_id    Int       // メッセージを送信したユーザーのID
+  message    String    // メッセージの内容
+  timestamp  DateTime  @default(now()) // メッセージ送信日時
+  group      Group     @relation(fields: [group_id], references: [id], onDelete: Cascade) // グループとのリレーション
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade) // ユーザーとのリレーション
 }

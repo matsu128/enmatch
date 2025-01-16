@@ -1,16 +1,21 @@
-// socketHandler.js
-const messageService = require('./messageService'); // messageServiceをインポート
+const chatController = require('../controllers/chatController'); // チャットのビジネスロジックをインポート
 
+/**
+ * メッセージ送信イベントを処理
+ * @param {object} socket - 接続中のSocket.IOインスタンス
+ * @param {object} data - クライアントから受け取ったデータ
+ */
 module.exports.handleSendMessage = async (socket, data) => {
   try {
-    // Prismaを使ってメッセージをDBに保存
-    const savedMessage = await messageService.saveMessage(data);
+    // データベースにメッセージを保存
+    const savedMessage = await chatController.saveMessage(data);
 
-    // メッセージが保存された後、受信者に通知
+    // メッセージを受信者に送信
     socket.to(data.receiverId).emit('receiveMessage', savedMessage);
-
   } catch (error) {
     console.error('Error handling sendMessage:', error);
+
+    // クライアントにエラーメッセージを送信
     socket.emit('error', 'メッセージの送信に失敗しました');
   }
 };
