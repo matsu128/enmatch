@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient({ log: [] });
 const jwt = require("jsonwebtoken");
-const redisClient = require("./redisClient"); // Redisクライアントをインポート
+const { redisClient } = require('../server'); // server.jsからRedisクライアントをインポート
 
 /**
  * メッセージをデータベースに保存
