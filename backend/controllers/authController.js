@@ -23,6 +23,8 @@ exports.login = async (req, res) => {
       },
     });
 
+    console.log("back,ctr,auth,tryの最初のfind pass")
+
     // ユーザーが存在しない場合
     if (!user) {
       return res.status(400).json({ message: 'ユーザーが見つかりません' });
@@ -53,6 +55,8 @@ exports.login = async (req, res) => {
       },
     });
     await redisClient.setEx(randomId, 3600, redisData);
+
+    console.log("back,ctr,auth,redisに保存 pass")
 
     // Redisからデータを取得
     const storedData = await redisClient.get(randomId);
