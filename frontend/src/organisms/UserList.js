@@ -1,35 +1,42 @@
 import React, { useState, useContext } from "react";
 import UserCard from "../molecules/UserCard";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from '../contexts/AuthContext';
 
 const UserList = ({ users, onLoginClick }) => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const [message, setMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // 確認モーダル表示用
+  const [pendingAction, setPendingAction] = useState(null); // 実行待ちのアクション
   const navigate = useNavigate();
-  const { isLoggedIn } = useContext(AuthContext);
 
+  // sessionStorageからrandomIdを取得してログイン状態を判定
+  const isLoggedIn = !!sessionStorage.getItem("randomId");
+
+  // ユーザーカードがクリックされたときの処理
   const handleCardClick = (userId) => {
     setSelectedUser(userId === selectedUser ? null : userId);
   };
 
-  /**
-   * チャットボタンがクリックされたときの処理
-   * 選択されたユーザーのランダムIDを使ってチャット画面に遷移する
-   * @param {string} randomId - 選択されたユーザーのランダムID
-   */
+  // チャットボタンがクリックされたときの処理
   const handleChatClick = (randomId) => {
-    // ログインしている場合のみ遷移
-    if(isLoggedIn) {
-      navigate("/chat", { state: { randomId } });
+    if (isLoggedIn) {
+      navigate("/chat", { state: { randomId, chatJudge: true } });
     } else {
-      onLoginClick();
+      // モーダルを表示し、ログイン確認
+      setPendingAction(() => () => onLoginClick());
+      setShowConfirmModal(true);
     }
   };
 
+  // モーダルを閉じる
   const closeModal = () => {
-    setShowModal(false);
+    setShowConfirmModal(false);
+    setPendingAction(null);
+  };
+
+  // モーダルで「はい」を選択したときの処理
+  const handleConfirm = () => {
+    if (pendingAction) pendingAction(); // 保留中のアクションを実行
+    closeModal();
   };
 
   return (
@@ -46,14 +53,33 @@ const UserList = ({ users, onLoginClick }) => {
         ))}
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-sm w-full">
-            <h2 className="text-xl font-bold mb-4">メッセージ</h2>
-            <p>{message}</p>
-            <button onClick={closeModal} className="mt-4 bg-blue-500 text-white p-2 rounded">
-              閉じる
-            </button>
+      {/* 確認モーダル */}
+      {showConfirmModal && (
+        <div
+          className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white px-8 rounded-lg shadow-2xl transform transition-all duration-300 scale-105 max-w-[90vw] max-h-[90vh] sm:h-[300px] lg:w-[400px] lg:h-[300px] w-96 relative overflow-hidden"
+            onClick={(e) => e.stopPropagation()} // 背景クリックで閉じないようにする
+          >
+            <h2 className="text-2xl font-semibold text-gray-800 text-center mt-6">
+              ログインしますか？
+            </h2>
+            <div className="flex justify-center mt-8 space-x-4">
+              <button
+                onClick={handleConfirm}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+              >
+                はい
+              </button>
+              <button
+                onClick={closeModal}
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition"
+              >
+                いいえ
+              </button>
+            </div>
           </div>
         </div>
       )}

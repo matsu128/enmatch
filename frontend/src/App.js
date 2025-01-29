@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext'; // 認証コンテキス�
 import UserSearchPage from './pages/UserSearchPage'; // ユーザー検索ページコンポーネント
 import ChatPage from './pages/ChatPage'; // チャットページコンポーネント
 import MyPage from './pages/MyPage'; // マイページコンポーネント
+import SecretPage from './pages/SecretPage'; // SecretPageコンポーネントをインポート
 import Header from './organisms/Header'; // ヘッダーコンポーネント
 import LoginModal from './organisms/LoginModal'; // ログインモーダルコンポーネント
 import SignUpModal from './organisms/SignUpModal'; // サインアップモーダルコンポーネント
@@ -40,7 +41,7 @@ function App() {
                   onLoginClick={handleLoginClick}
                   onSignUpClick={handleSignUpClick}
                 />
-                <div className="mt-16">
+                <div className="mt-14">
                   <UserSearchPage onLoginClick={handleLoginClick} />
                 </div>
                 {showLoginModal && (
@@ -85,7 +86,7 @@ function App() {
             element={
               <>
                 <Header />
-                <div className="mt-16">
+                <div className="mt-14">
                   <ChatPage />
                 </div>
               </>
@@ -96,8 +97,19 @@ function App() {
             element={
               <>
                 <Header />
-                <div className="mt-16">
+                <div className="mt-14">
                   <MyPage />
+                </div>
+              </>
+            }
+          />
+          <Route
+            path="/secret"
+            element={
+              <>
+                <Header />
+                <div className="mt-12">
+                  <SecretPage />
                 </div>
               </>
             }

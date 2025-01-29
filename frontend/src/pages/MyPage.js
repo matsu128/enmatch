@@ -28,8 +28,6 @@ const MyPage = () => {
         const response = await axios.get('/api/user/user', { withCredentials: true }); // APIエンドポイントにGETリクエスト
         const userData = response.data;
 
-        console.log('取得したユーザー情報:', userData);
-
         // 取得したデータを初期値として設定
         setContactInfo({
           name: userData.name || '',
@@ -57,17 +55,11 @@ const MyPage = () => {
   }, []);
 
   const saveChanges = () => {
-    console.log('連絡先情報:', contactInfo);
-    console.log('フィルタ:', selectedFilters);
-
     // サーバーに変更を保存するAPIリクエスト例
     axios
       .post('/api/user/update', {
         contactInfo,
         filters: selectedFilters,
-      })
-      .then((response) => {
-        console.log('変更が保存されました:', response.data);
       })
       .catch((error) => {
         console.error('変更保存に失敗しました:', error);

@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { verifyToken } = require('../middleware/authMiddleware');
-const { getChatList,getChatMessages } = require('../controllers/chatController');
+const { getChatList, getChatMessages } = require('../controllers/chatController');
 
 // チャット情報取得ルート
-router.post('/chat', verifyToken, getChatMessages);
-router.post('/list', verifyToken, getChatList);
+router.post('/chat', getChatMessages);
+router.post('/list', getChatList);
 
 module.exports = router;

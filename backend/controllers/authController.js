@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid'); // UUIDライブラリ
 const prisma = new PrismaClient();
 
-// server.jsからRedisクライアントをインポート
-const { redisClient } = require('../server');
+// Redisクライアントをインポート
+const redisClient = require('../redisClient');
 
 exports.login = async (req, res) => {
   try {
@@ -23,21 +23,16 @@ exports.login = async (req, res) => {
       },
     });
 
-    console.log("back,ctr,auth,tryの最初のfind pass")
-
     // ユーザーが存在しない場合
     if (!user) {
       return res.status(400).json({ message: 'ユーザーが見つかりません' });
     }
 
-    // TODO Local用はハッシュ化してないので飛ばす
-    /*
     // パスワードを検証
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'パスワードが間違っています' });
     }
-    */
 
     // JWTトークンを生成
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -49,14 +44,17 @@ exports.login = async (req, res) => {
     const redisData = JSON.stringify({
       token,
       user: {
-        id: user.id,
         name: user.name,
         icon: user.icon,
       },
     });
-    await redisClient.setEx(randomId, 3600, redisData);
 
-    console.log("back,ctr,auth,redisに保存 pass")
+    try {
+      await redisClient.setEx(randomId, 3600, redisData);
+    } catch (err) {
+      console.error('Failed to save data to Redis:', err);
+      return res.status(500).json({ message: 'Redisへの保存中にエラーが発生しました' });
+    }
 
     // Redisからデータを取得
     const storedData = await redisClient.get(randomId);
@@ -73,10 +71,74 @@ exports.login = async (req, res) => {
       randomId,
       user: {
         icon: parsedData.user.icon,
+        name: parsedData.user.name,
       }
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'サーバーエラー' });
+  }
+};
+
+exports.signup = async (req, res) => {
+  try {
+    const { name, email, password, icon } = req.body;
+
+    // emailの重複確認
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'このメールアドレスは既に登録されています' });
+    }
+
+    // パスワードのハッシュ化
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 新しいユーザーをデータベースに作成
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        icon: icon || null, // iconが指定されていない場合はnullを設定
+      },
+    });
+
+    // JWTトークンを生成
+    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // UUIDv4を使用してランダムなIDを生成
+    const randomId = uuidv4();
+
+    // Redisにトークンとユーザー情報を保存 (有効期限: 1時間)
+    const redisData = JSON.stringify({
+      token,
+      user: {
+        name: newUser.name,
+        icon: newUser.icon,
+      },
+    });
+
+    try {
+      await redisClient.setEx(randomId, 3600, redisData);
+    } catch (err) {
+      console.error('Redisへの保存中にエラーが発生しました:', err);
+      return res.status(500).json({ message: 'Redisへの保存中にエラーが発生しました' });
+    }
+
+    // randomIdを返却
+    res.status(201).json({
+      message: 'サインアップ成功',
+      randomId,
+      user: {
+        name: newUser.name,
+        icon: newUser.icon,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }
 };
