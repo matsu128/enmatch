@@ -135,8 +135,9 @@ npx prisma db push
 # 6. サーバーを起動 / Start the server
 npm start
 
+---
 
-## 3. フロントエンドのセットアップ / Frontend Setup
+### 3. フロントエンドのセットアップ / Frontend Setup
 
 # 1. フロントエンドディレクトリに移動 / Move to frontend directory
 cd frontend
@@ -151,6 +152,8 @@ cp .env.example .env
 
 # 4. 開発サーバーを起動 / Start development server
 npm start
+
+---
 
 これで、http://localhost:3000でアプリケーションにアクセスできます。
 You can now access the application at http://localhost:3000.
