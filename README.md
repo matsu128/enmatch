@@ -157,7 +157,7 @@ npm start
 ```
 
 - これで、http://localhost:3000でアプリケーションにアクセスできます。
-- You can now access the application at http://localhost:3000.
+You can now access the application at http://localhost:3000.
 
 - ライセンス / License
-[MIT License](LICENSE)
+MIT License
