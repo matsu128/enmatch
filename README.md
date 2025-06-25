@@ -75,8 +75,8 @@ Users can create projects and define necessary issues (tasks) within those proje
 Atomic Designの思想に基づいてコンポーネントを管理しています。  
 Components are managed based on the Atomic Design principles.
 
-frontend/
-└── src/
+frontend/ |br
+└── src/ |br
 ├── atoms/ # Button, Inputなど最小単位のコンポーネント / Smallest components like Button, Input
 ├── molecules/ # atomsを組み合わせたコンポーネント / Components combining atoms
 ├── organisms/ # Header, Formなど具体的な機能を持つコンポーネント群 / Components with concrete functions like Header, Form
