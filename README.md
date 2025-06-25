@@ -76,13 +76,13 @@ Atomic Designの思想に基づいてコンポーネントを管理していま�
 Components are managed based on the Atomic Design principles.
 
 frontend/
-- **src/
-- **atoms/ # Button, Inputなど最小単位のコンポーネント / Smallest components like Button, Input
-- ** molecules/ # atomsを組み合わせたコンポーネント / Components combining atoms
-- ** organisms/ # Header, Formなど具体的な機能を持つコンポーネント群 / Components with concrete functions like Header, Form
-- ** pages/ # 各ページのコンポーネント / Components for each page
-- ** templates/ # ページのレイアウトテンプレート / Layout templates for pages
-- ** contexts/ # 認証などのグローバルな状態管理 / Global state management like authentication
+- src/
+- atoms/ # Button, Inputなど最小単位のコンポーネント / Smallest components like Button, Input
+- molecules/ # atomsを組み合わせたコンポーネント / Components combining atoms
+- organisms/ # Header, Formなど具体的な機能を持つコンポーネント群 / Components with concrete functions like Header, Form
+- pages/ # 各ページのコンポーネント / Components for each page
+- templates/ # ページのレイアウトテンプレート / Layout templates for pages
+- contexts/ # 認証などのグローバルな状態管理 / Global state management like authentication
 
 
 ### バックエンド (`/backend`)
@@ -91,12 +91,12 @@ MVCに近い責務分離された構成です。
 A structure with separation of concerns close to MVC.
 
 backend/
-├── controllers/ # リクエストに対するビジネスロジック / Business logic for requests
-├── routes/ # URLのエンドポイント定義 / URL endpoint definitions
-├── middleware/ # 認証などの共通処理 / Common processing like authentication
-├── prisma/ # データベーススキーマとマイグレーション / Database schema and migrations
-├── socket/ # Socket.IO関連のロジック / Socket.IO related logic
-└── config/ # データベース接続情報など / Database connection info etc.
+- controllers/ # リクエストに対するビジネスロジック / Business logic for requests
+- routes/ # URLのエンドポイント定義 / URL endpoint definitions
+- middleware/ # 認証などの共通処理 / Common processing like authentication
+- prisma/ # データベーススキーマとマイグレーション / Database schema and migrations
+- socket/ # Socket.IO関連のロジック / Socket.IO related logic
+- config/ # データベース接続情報など / Database connection info etc.
 
 
 ---
@@ -135,7 +135,8 @@ npx prisma db push
 # 6. サーバーを起動 / Start the server
 npm start
 
-### 3. フロントエンドのセットアップ / Frontend Setup
+
+## 3. フロントエンドのセットアップ / Frontend Setup
 
 # 1. フロントエンドディレクトリに移動 / Move to frontend directory
 cd frontend
